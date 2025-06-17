@@ -1,16 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import {
-  View, Text, StyleSheet, FlatList,
+  View, Text, StyleSheet, FlatList, Switch,
   Image, TouchableOpacity, Dimensions, ActivityIndicator,
   TextInput, Button, Alert, KeyboardAvoidingView, Platform, ScrollView
 } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { ThemeContext } from '../context/ThemeContext'; // adjust path if needed
 
 const { width } = Dimensions.get('window');
 const ITEM_WIDTH = width * 0.8 + 20;
 
 export default function HomeScreen() {
+  const { darkMode, toggleDarkMode } = useContext(ThemeContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState('');
@@ -28,7 +30,6 @@ export default function HomeScreen() {
       .catch(() => setLoading(false));
   }, []);
 
-  // Auto-slide every 5 seconds with smooth offset
   useEffect(() => {
     if (products.length === 0) return;
 
@@ -54,12 +55,12 @@ export default function HomeScreen() {
 
   const renderBannerItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.bannerCard}
+      style={[styles.bannerCard, darkMode && { backgroundColor: '#1e1e1e', borderColor: '#444' }]}
       onPress={() => navigation.navigate('ProductDetail', { product: item })}
     >
       <Image source={{ uri: item.image }} style={styles.bannerImage} />
-      <View style={styles.bannerInfo}>
-        <Text numberOfLines={1} style={styles.bannerTitle}>{item.title}</Text>
+      <View style={[styles.bannerInfo, darkMode && { backgroundColor: '#2c2c2c' }]}>
+        <Text numberOfLines={1} style={[styles.bannerTitle, darkMode && { color: '#fff' }]}>{item.title}</Text>
         <Text style={styles.bannerPrice}>₹ {item.price}</Text>
       </View>
     </TouchableOpacity>
@@ -67,16 +68,28 @@ export default function HomeScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, darkMode && styles.darkBackground]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView>
-        <Text style={styles.header}>Welcome to Home 🏠</Text>
-        <Text style={styles.paragraph}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Toggle Section */}
+        <View style={styles.toggleRow}>
+          <Text style={[styles.toggleLabel, darkMode && styles.darkText]}>
+            {darkMode ? 'Dark Mode 🌙' : 'Light Mode ☀️'}
+          </Text>
+          <Switch value={darkMode} onValueChange={toggleDarkMode} />
+        </View>
+
+        <Text style={[styles.header, darkMode && styles.darkText]}>
+          Welcome to Home 🏠
+        </Text>
+        <Text style={[styles.paragraph, darkMode && styles.darkText]}>
           Browse products, view your cart, and manage your profile easily from here.
         </Text>
 
-        <Text style={styles.subHeader}>Featured Products</Text>
+        <Text style={[styles.subHeader, darkMode && styles.darkText]}>
+          Featured Products
+        </Text>
 
         {loading ? (
           <ActivityIndicator size="large" style={{ marginTop: 40 }} />
@@ -102,11 +115,15 @@ export default function HomeScreen() {
 
         {/* Feedback Section */}
         <View style={styles.feedbackContainer}>
-          <Text style={styles.feedbackHeader}>📢 Feedback</Text>
+          <Text style={[styles.feedbackHeader, darkMode && styles.darkText]}>📢 Feedback</Text>
           <TextInput
-            style={styles.feedbackInput}
+            style={[
+              styles.feedbackInput,
+              darkMode && { backgroundColor: '#2c2c2c', color: '#fff', borderColor: '#555' }
+            ]}
             multiline
             placeholder="Write your thoughts here..."
+            placeholderTextColor={darkMode ? '#aaa' : '#888'}
             value={feedback}
             onChangeText={setFeedback}
           />
@@ -122,7 +139,24 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 20,
-    backgroundColor: '#f9fafe',
+    backgroundColor: '#fff',
+  },
+  darkBackground: {
+    backgroundColor: '#121212',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 8,
+    color: '#000',
+  },
+  darkText: {
+    color: '#fff',
   },
   header: {
     fontSize: 28,
@@ -180,7 +214,7 @@ const styles = StyleSheet.create({
   },
   feedbackContainer: {
     marginTop: 30,
-    marginBottom: 60, // space above tab bar
+    marginBottom: 60,
   },
   feedbackHeader: {
     fontSize: 18,
@@ -198,5 +232,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     minHeight: 80,
     textAlignVertical: 'top',
+    color: '#000',
   },
 });
