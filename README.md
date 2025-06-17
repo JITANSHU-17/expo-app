@@ -79,10 +79,39 @@ Requirements:
 • Cart screen with total price and list of items 
 Bonus: Persist cart in AsyncStorage.
 
+5)Assignment 5: Profile, Wishlist, and Recommendation Section 
+Total Marks: 20 
+Objective: 
+• Design profile screen with static/dynamic user info. 
+• Create wishlist feature (add to favorites). 
+• Show product recommendations. 
+Requirements: 
+• Profile screen with editable user details and profile image 
+• Wishlist functionality: tap heart icon to add/remove from favorites 
+• Favorite items stored in global state 
+• Recommendation section with suggested products (based on category or 
+popularity) 
+Profile Image Upload: 
+• Use Expo Image Picker (expo-image-picker) 
+• Install: npx expo install expo-image-picker 
+• Steps: 
+1. Ask for media library permission 
+2. Use ImagePicker.launchImageLibraryAsync() to select image 
+3. Store selected image URI in state or Context 
+import * as ImagePicker from 'expo-image-picker'; 
+const pickImage = async () => { 
+const permissionResult = await 
+ImagePicker.requestMediaLibraryPermissionsAsync(); 
+if (!permissionResult.granted) { 
+alert('Permission to access camera roll is required!'); 
+return; 
+} 
+const result = await ImagePicker.launchImageLibraryAsync(); 
+if (!result.cancelled) { 
+setImageUri(result.uri); 
+} 
+}; 
+Bonus: Add logout and dark mode toggle.
+
 ![WhatsApp Image 2025-06-14 at 4 30 09 PM](https://github.com/user-attachments/assets/73bfdfdd-5e11-4daf-b895-c4026e0ae47f)
 ![WhatsApp Image 2025-06-14 at 4 30 10 PM](https://github.com/user-attachments/assets/b9bf8bf9-5f58-485b-917a-65727db1fea2)
-![WhatsApp Image 2025-06-14 at 4 30 10 PM (1)](https://github.com/user-attachments/assets/824f47e7-56fd-4112-8bcc-7b1553544e29)
-![WhatsApp Image 2025-06-14 at 4 30 10 PM (2)](https://github.com/user-attachments/assets/0c1f73e9-ccbe-406f-bc1d-34bd4ee0cfc3)
-![WhatsApp Image 2025-06-14 at 4 30 11 PM](https://github.com/user-attachments/assets/3169d7aa-cadc-4d98-90c7-c13f5cc645c7)
-![WhatsApp Image 2025-06-14 at 4 30 11 PM (1)](https://github.com/user-attachments/assets/61cafd5e-0708-4075-ba17-a4a8440e1823)
-![WhatsApp Image 2025-06-14 at 4 30 11 PM (2)](https://github.com/user-attachments/assets/27ce401d-a858-46ab-b333-dc982bbd32b2)
